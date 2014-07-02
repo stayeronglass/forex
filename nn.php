@@ -1,27 +1,15 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head>
-<table style="border: 1px solid;border-collapse: collapse;border-spacing: 0;" >
-    <tr>
-        <td style="border-spacing: 0;text-transform: uppercase;border: 1px solid">&nbsp;</td>
-
-    </tr>
-    <tr>
-        <td style="font-family:Arial, Helvetica, sans-serif;  padding:0;border-spacing: 0;text-transform: uppercase; text-align: center;border: 1px solid">зайди на сайт <br> comics.ctc.ru</td>
-
-    </tr>
-
-</table>
-
 
 <?php
 
     error_reporting(-1);
     ini_set("display_errors", 1);
-    $file = '';
+    $file = null;
 
 
-class n{
+class ny{
 
     public $input = array();
     public $output = 0;
@@ -31,11 +19,10 @@ class n{
 
 
     public function __construct($n){
-        for($i = 1; $i <= $n; $i++){
+        for($i = 0; $i < $n; $i++){
             $this->input[] = mt_rand(-2,2) / 10;
         }
 
-        $this->input[0] = -1;
     }//public function __construct($n){
 
     function sigmoid($t){
@@ -71,14 +58,19 @@ class n{
 
     }//function identity()
 
-    public function calc($vector, $w){
+
+    public function calc($vector){
 
         $result = 0;
         foreach($vector as $key => $value){
-            $result += $value * $w[$key];
+            $result += $value * $this->input[$key];
         }
 
-        return $this->sigmoid($result);
+        $this->result =  $this->sigmoid($result);
+
+        $this->inverse_result = $this->result * (1 - $this->result); // говорят, что это производная сигмоиды
+
+        return $this->result;
     }//public function calc($vector, $w){
 
 }
@@ -93,7 +85,7 @@ class n{
     if(!$file)
         $file = fopen('eurusd.csv', 'r');
 
-    for($i = 1; $i <= $n; $i++){
+    for($i = 0; $i < $n; $i++){
         $line = fgetcsv($file, 10000, ",");
         if(!$line) return false;
 
@@ -122,10 +114,14 @@ mt_srand();
 $network = array();
 
 
-for($i = 1; $i <= $n; $i++){
-    $network['H'] = new $n($n);
+for($i = 0; $i < $n; $i++){
+    $network['H'][] = new ny($n);
 }
 
-for($i = 1; $i <= $M; $i++){
-        $network['OUT'] = new $n($H);
+for($i = 0; $i < $M; $i++){
+        $network['OUT'][] = new ny($H);
 }
+
+$input = fillInput($n);
+
+var_dump($input );
