@@ -2,28 +2,50 @@
 
     $i = 0;
     $n = 10;
+    $line = 0;
+    $file = '';
     function nextItem(){
         global $i;
         global $n;
+        global $file;
+        global $line;
 
-        $result = sin($i);
-        $i += 0.1;
+        $line = fgetcsv($file, 10000, ",");
+        if(!$line) return false;
+        $i++;
+        if ($i > 1000) return false;
 
-        if($i > $n ) return false;
-var_dump($result);
+        $result = (float) $line[2];
+        var_dump($result);
+
         return $result;
     }//function nextItem(){
 
+
     function fillInput(){
         global $n;
+        global $line ;
+        global $file;
 
         $vector = new \SplQueue();
-        for($i = 1; $i <= $n; $i++){
-            $vector->push(nextItem());
-        }
+
+        if(!$file)
+            $file = fopen('eurusd.csv', 'r');
+
+        for($i = 0; $i < $n; $i++){
+            $line = fgetcsv($file, 10000, ",");
+            if(!$line) return false;
+            $line++;
+            $date = date_create_from_format('Y.m.d', $line[0]);
+
+            if ('2013' != $date->format('Y')) return false;
+
+            $vector->push( (float) $line[2] );
+        }//for($i = 0; $i <= $this->input; $i++){
 
         return $vector;
-    }//function fillInput(){
+    }//public function fillInput(){
+
 
     /**
      * @param $input SplQueue
@@ -34,7 +56,7 @@ var_dump($result);
 
         $last = $input->offsetGet($n-1);
 
-        for($i = $n-1; $i >= 5; $i--):
+        for($i = $n-1; $i >= 1; $i--):
             $current = $input->offsetGet($i);
             if($current > $last) return false;
         endfor;
@@ -52,7 +74,7 @@ var_dump($result);
 
         $last = $input->offsetGet($n-1);
 
-        for($i = $n-1; $i >= 5; $i--):
+        for($i = $n-1; $i >= 1; $i--):
             $current = $input->offsetGet($i);
             if($current < $last) return false;
         endfor;
