@@ -2,6 +2,8 @@
 
     $i = 0;
     $n = 10;
+    $skip = 0;
+
     $chartdataX = array();
     $chartdataY = array();
 
@@ -27,6 +29,7 @@
 
     function fillInput(){
         global $n;
+
 
         $vector = new \SplQueue();
         for($i = 1; $i <= $n; $i++){
